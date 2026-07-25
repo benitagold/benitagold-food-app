@@ -1,0 +1,99 @@
+/**
+ * Ordering window rules for برنامه غذایی روزانه بنیتاگلد
+ * Open: Saturday–Wednesday, 12:00–15:00, Asia/Tehran time.
+ *
+ * IMPORTANT: This must be evaluated in Asia/Tehran time regardless of where
+ * the server or the visitor's browser is physically located, otherwise a
+ * server deployed in another timezone (e.g. UTC) would open/close the form
+ * at the wrong moment. We use Intl.DateTimeFormat with an explicit
+ * timeZone instead of relying on Date.getDay()/getHours().
+ */
+
+// JS convention: 0=Sunday ... 6=Saturday
+const ALLOWED_WEEKDAYS = new Set([6, 0, 1, 2, 3]); // شنبه تا چهارشنبه
+const OPEN_HOUR = 12; // 12:00
+const CLOSE_HOUR = 15; // 15:00 (exclusive)
+const TIMEZONE = "Asia/Tehran";
+
+const WEEKDAY_LABELS_FA: Record<number, string> = {
+  0: "یکشنبه",
+  1: "دوشنبه",
+  2: "سه‌شنبه",
+  3: "چهارشنبه",
+  4: "پنجشنبه",
+  5: "جمعه",
+  6: "شنبه",
+};
+
+export interface TehranClock {
+  weekday: number; // 0-6, JS convention
+  hour: number;
+  minute: number;
+  weekdayLabel: string;
+  isoLikeString: string; // e.g. "1405/05/... " not used for date math, only display fallback
+}
+
+/** Reads the current wall-clock time in Asia/Tehran without any external date library. */
+export function getTehranClock(date: Date = new Date()): TehranClock {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: TIMEZONE,
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(date);
+
+  const weekdayShort = parts.find((p) => p.type === "weekday")?.value ?? "Sun";
+  let hour = Number(parts.find((p) => p.type === "hour")?.value ?? "0");
+  const minute = Number(parts.find((p) => p.type === "minute")?.value ?? "0");
+
+  // en-US hour12:false can report "24" for midnight in some environments; normalize.
+  if (hour === 24) hour = 0;
+
+  const weekdayMap: Record<string, number> = {
+    Sun: 0,
+    Mon: 1,
+    Tue: 2,
+    Wed: 3,
+    Thu: 4,
+    Fri: 5,
+    Sat: 6,
+  };
+  const weekday = weekdayMap[weekdayShort] ?? 0;
+
+  return {
+    weekday,
+    hour,
+    minute,
+    weekdayLabel: WEEKDAY_LABELS_FA[weekday],
+    isoLikeString: date.toISOString(),
+  };
+}
+
+export interface WindowStatus {
+  isOpen: boolean;
+  clock: TehranClock;
+  message: string;
+}
+
+/** Single source of truth for "is the ordering window open right now". */
+export function getOrderWindowStatus(date: Date = new Date()): WindowStatus {
+  const clock = getTehranClock(date);
+  const dayOk = ALLOWED_WEEKDAYS.has(clock.weekday);
+  const timeOk = clock.hour >= OPEN_HOUR && clock.hour < CLOSE_HOUR;
+  const isOpen = dayOk && timeOk;
+
+  const message = isOpen
+    ? "ثبت سفارش هم‌اکنون فعال است."
+    : "ثبت سفارش فقط از شنبه تا چهارشنبه، ساعت ۱۲ تا ۱۵ فعال است.";
+
+  return { isOpen, clock, message };
+}
+
+export function formatTehranTimestamp(date: Date = new Date()): string {
+  return new Intl.DateTimeFormat("fa-IR", {
+    timeZone: TIMEZONE,
+    dateStyle: "full",
+    timeStyle: "short",
+  }).format(date);
+}
