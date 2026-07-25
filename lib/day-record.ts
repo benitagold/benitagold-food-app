@@ -1,10 +1,13 @@
 import { Redis } from "@upstash/redis";
 import { getTehranDateKey } from "@/lib/time-window";
 
-// Reads UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN, which Vercel sets
-// automatically once a Redis (Upstash) database from the Marketplace is
-// connected to this project — no manual config needed.
-const redis = Redis.fromEnv();
+// Vercel's "Upstash for Redis" marketplace integration provisions these
+// exact env var names (KV_REST_API_URL / KV_REST_API_TOKEN) automatically
+// once the database is connected to this project — no manual config needed.
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL!,
+  token: process.env.KV_REST_API_TOKEN!,
+});
 
 export type Location = "gallery" | "office";
 
@@ -46,21 +49,4 @@ export async function recordSubmission(
 ): Promise<{ record: DayRecord; justCompleted: boolean }> {
   const { dateKey, record } = await getTodayRecord();
 
-  const wasComplete = record.gallery !== null && record.office !== null;
-
-  record[location] = count;
-  record[`${location}At`] = new Date().toISOString();
-
-  const isCompleteNow = record.gallery !== null && record.office !== null;
-  const justCompleted = isCompleteNow && !wasComplete;
-
-  await saveTodayRecord(dateKey, record);
-
-  return { record, justCompleted };
-}
-
-export async function markSmsSent(): Promise<void> {
-  const { dateKey, record } = await getTodayRecord();
-  record.smsSent = true;
-  await saveTodayRecord(dateKey, record);
-}
+  const wasComplete = record.gallery !== null &&
