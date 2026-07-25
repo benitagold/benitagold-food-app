@@ -97,3 +97,17 @@ export function formatTehranTimestamp(date: Date = new Date()): string {
     timeStyle: "short",
   }).format(date);
 }
+
+/** A stable YYYY-MM-DD key (in Tehran time) used to group today's two submissions together. */
+export function getTehranDateKey(date: Date = new Date()): string {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: TIMEZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+  const year = parts.find((p) => p.type === "year")?.value ?? "0000";
+  const month = parts.find((p) => p.type === "month")?.value ?? "01";
+  const day = parts.find((p) => p.type === "day")?.value ?? "01";
+  return `${year}-${month}-${day}`;
+}

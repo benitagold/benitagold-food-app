@@ -8,6 +8,11 @@
 
 body {
   background-color: #ffffff;
+  background-image:
+    linear-gradient(var(--tick-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--tick-line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-position: center;
 }
 
 /* Signature element: a rotated open/closed stamp, like a shop door sign. */

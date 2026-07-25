@@ -76,11 +76,17 @@ function flattenMessages(messages: IranPayamakResponse["messages"]): string | un
   if (!messages) return undefined;
   if (typeof messages === "string") return messages;
   if (Array.isArray(messages)) return messages.join(" — ");
+  // object of field -> string|string[]
   return Object.entries(messages)
     .map(([field, val]) => `${field}: ${Array.isArray(val) ? val.join(", ") : val}`)
     .join(" | ");
 }
 
+/**
+ * Sends a single SMS. Never throws for expected failure modes (network error,
+ * non-2xx response, timeout, gateway-level error) — callers get a structured
+ * SmsResult instead so the API route can decide how to respond to the client.
+ */
 export async function sendSms(payload: SmsPayload): Promise<SmsResult> {
   try {
     const { url, init } = buildRequest(payload);
@@ -93,6 +99,7 @@ export async function sendSms(payload: SmsPayload): Promise<SmsResult> {
       raw = undefined;
     }
 
+    // HTTP-level failure (wrong URL, auth rejected, server error, etc).
     if (!response.ok) {
       const detail = raw ? flattenMessages(raw.messages) ?? JSON.stringify(raw) : undefined;
       return {
@@ -103,6 +110,7 @@ export async function sendSms(payload: SmsPayload): Promise<SmsResult> {
       };
     }
 
+    // Gateway-level failure (HTTP 200/201 but status: "error" in the body).
     if (raw?.status === "error") {
       return {
         ok: false,
