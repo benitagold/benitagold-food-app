@@ -12,6 +12,7 @@ const MAX_MEALS_PER_FIELD = 1000;
 const LOCATION_LABELS: Record<Location, string> = {
   gallery: "گالری بنیتا گلد",
   office: "دفتر حکیم بنیتا گلد",
+  marketing: "دفتر دیجیتال مارکتینگ حکیم بنیتا گلد",
 };
 
 interface RequestBody {
@@ -26,11 +27,10 @@ function isPositiveInteger(value: unknown): value is number {
 }
 
 function getExpectedPassword(location: Location): string | undefined {
-  return location === "gallery"
-    ? process.env.GALLERY_PASSWORD
-    : process.env.OFFICE_PASSWORD;
+  if (location === "gallery") return process.env.GALLERY_PASSWORD;
+  if (location === "office") return process.env.OFFICE_PASSWORD;
+  return process.env.MARKETING_PASSWORD;
 }
-
 function getClientKey(req: NextRequest): string {
   const forwardedFor = req.headers.get("x-forwarded-for");
   if (forwardedFor) return forwardedFor.split(",")[0].trim();
@@ -47,10 +47,9 @@ export async function POST(req: NextRequest) {
 
   const { location, password, count, idempotencyKey } = body;
 
-  if (location !== "gallery" && location !== "office") {
+if (location !== "gallery" && location !== "office" && location !== "marketing") {
     return NextResponse.json({ ok: false, error: "محل نامعتبر است." }, { status: 400 });
   }
-
   if (typeof idempotencyKey !== "string" || idempotencyKey.length < 8) {
     return NextResponse.json(
       { ok: false, error: "درخواست نامعتبر است (شناسه ثبت یافت نشد)." },
@@ -97,25 +96,30 @@ export async function POST(req: NextRequest) {
   // Save this location's count for today.
 const { record, justCompleted, dateKey } = await recordSubmission(location as Location, count);
 
-  // Still waiting on the other location.
-  if (record.gallery === null || record.office === null) {
+// Still waiting on other locations.
+  if (record.gallery === null || record.office === null || record.marketing === null) {
+    const missing: string[] = [];
+    if (record.gallery === null) missing.push(LOCATION_LABELS.gallery);
+    if (record.office === null) missing.push(LOCATION_LABELS.office);
+    if (record.marketing === null) missing.push(LOCATION_LABELS.marketing);
+
     return NextResponse.json({
       ok: true,
       waiting: true,
       location,
       count,
-      waitingFor: record.gallery === null ? LOCATION_LABELS.gallery : LOCATION_LABELS.office,
+      waitingFor: missing.join(" و "),
     });
   }
-
   // Both are in. Send the combined SMS, but only once (guarded by smsSent).
   if (justCompleted && !record.smsSent) {
-    const total = record.gallery + record.office;
+const total = record.gallery + record.office + record.marketing;
     const timestampFa = formatTehranTimestamp();
 
     const message = buildMealReportMessage({
       galleryCount: record.gallery,
       officeCount: record.office,
+      marketingCount: record.marketing,
       total,
       timestampFa,
     });
@@ -141,13 +145,14 @@ const { record, justCompleted, dateKey } = await recordSubmission(location as Lo
 
 await markSmsSent(dateKey);
 
-    return NextResponse.json({
+return NextResponse.json({
       ok: true,
       waiting: false,
       justCompleted: true,
       total,
       galleryCount: record.gallery,
       officeCount: record.office,
+marketingCount: record.marketing,
       timestampFa,
     });
   }
@@ -158,8 +163,9 @@ await markSmsSent(dateKey);
     ok: true,
     waiting: false,
     justCompleted: false,
-    total: record.gallery + record.office,
-    galleryCount: record.gallery,
+    total: record.gallery + record.office + record.marketing,
+galleryCount: record.gallery,
     officeCount: record.office,
+    marketingCount: record.marketing,
   });
 }
