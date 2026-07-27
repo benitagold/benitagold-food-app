@@ -42,7 +42,7 @@ export async function saveTodayRecord(dateKey: string, record: DayRecord): Promi
 export async function recordSubmission(
   location: Location,
   count: number
-): Promise<{ record: DayRecord; justCompleted: boolean }> {
+): Promise<{ record: DayRecord; justCompleted: boolean; dateKey: string }> {
   const { dateKey, record } = await getTodayRecord();
   const wasComplete = record.gallery !== null && record.office !== null;
 
@@ -54,7 +54,7 @@ export async function recordSubmission(
 
   await saveTodayRecord(dateKey, record);
 
-  return { record, justCompleted };
+return { record, justCompleted, dateKey };
 }export async function markSmsSent(dateKey: string): Promise<void> {
   const key = keyFor(dateKey);
   const existing = await redis.get<DayRecord>(key);
