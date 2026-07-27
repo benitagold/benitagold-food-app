@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getOrderWindowStatus, formatTehranTimestamp } from "@/lib/time-window";
 
-type Location = "gallery" | "office";
+type Location = "gallery" | "office" | "marketing";
 
 type SubmitState =
   | { phase: "idle" }
@@ -16,6 +16,7 @@ type SubmitState =
 interface DayStatus {
   gallerySubmitted: boolean;
   officeSubmitted: boolean;
+  marketingSubmitted: boolean;
   smsSent: boolean;
 }
 
@@ -238,6 +239,16 @@ export default function Page() {
         disabled={!status.isOpen}
         alreadySubmittedToday={dayStatus?.officeSubmitted ?? false}
       />
+
+      <LocationCard
+        location="marketing"
+        title="تعداد غذای دفتر دیجیتال مارکتینگ حکیم بنیتا گلد"
+        responsibleName="جناب آقای فقیهی"
+        disabled={!status.isOpen}
+        alreadySubmittedToday={dayStatus?.marketingSubmitted ?? false}
+      />
+
+      <footer className="text-xs text-ink/35">
 
       <footer className="text-xs text-ink/35">
         آخرین به‌روزرسانی وضعیت: {formatTehranTimestamp()}
