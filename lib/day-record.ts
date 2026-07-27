@@ -39,14 +39,20 @@ export async function saveTodayRecord(dateKey: string, record: DayRecord): Promi
   await redis.set(keyFor(dateKey), record, { ex: 60 * 60 * 24 * 3 });
 }
 
-/**
- * Records one location's count for today. Returns the updated record plus
- * whether this submission just completed the pair (both locations in).
- */
 export async function recordSubmission(
   location: Location,
   count: number
 ): Promise<{ record: DayRecord; justCompleted: boolean }> {
   const { dateKey, record } = await getTodayRecord();
+  const wasComplete = record.gallery !== null && record.office !== null;
 
-  const wasComplete = record.gallery !== null &&
+  record[location] = count;
+  (record as any)[`${location}At`] = new Date().toISOString();
+
+  const isComplete = record.gallery !== null && record.office !== null;
+  const justCompleted = isComplete && !wasComplete;
+
+  await saveTodayRecord(dateKey, record);
+
+  return { record, justCompleted };
+}
