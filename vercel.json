@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/check-gallery",
+      "schedule": "45 6 * * *"
+    }
+  ]
+}
