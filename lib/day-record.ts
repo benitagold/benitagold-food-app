@@ -55,4 +55,10 @@ export async function recordSubmission(
   await saveTodayRecord(dateKey, record);
 
   return { record, justCompleted };
+}export async function markSmsSent(dateKey: string): Promise<void> {
+  const key = keyFor(dateKey);
+  const existing = await redis.get<DayRecord>(key);
+  if (!existing) return;
+  existing.smsSent = true;
+  await saveTodayRecord(dateKey, existing);
 }
