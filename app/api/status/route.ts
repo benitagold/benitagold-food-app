@@ -8,9 +8,10 @@ export async function GET() {
 
   // Deliberately expose only booleans, never the actual counts, since this
   // endpoint requires no password.
-  return NextResponse.json({
+return NextResponse.json({
     gallerySubmitted: record.gallery !== null,
     officeSubmitted: record.office !== null,
+    marketingSubmitted: record.marketing !== null,
     smsSent: record.smsSent,
   });
-}
+  }
