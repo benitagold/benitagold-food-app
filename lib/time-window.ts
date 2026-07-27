@@ -1,6 +1,6 @@
 /**
  * Ordering window rules for برنامه غذایی روزانه بنیتاگلد
- * Open: Saturday–Wednesday, 12:00–15:00, Asia/Tehran time.
+ * Open: Saturday-Wednesday, 09:00-11:00, Asia/Tehran time.
  *
  * IMPORTANT: This must be evaluated in Asia/Tehran time regardless of where
  * the server or the visitor's browser is physically located, otherwise a
@@ -11,8 +11,8 @@
 
 // JS convention: 0=Sunday ... 6=Saturday
 const ALLOWED_WEEKDAYS = new Set([6, 0, 1, 2, 3]); // شنبه تا چهارشنبه
-const OPEN_HOUR = 12; // 12:00
-const CLOSE_HOUR = 15; // 15:00 (exclusive)
+const OPEN_HOUR = 9; // 09:00
+const CLOSE_HOUR = 11; // 11:00 (exclusive)
 const TIMEZONE = "Asia/Tehran";
 
 const WEEKDAY_LABELS_FA: Record<number, string> = {
@@ -85,7 +85,7 @@ export function getOrderWindowStatus(date: Date = new Date()): WindowStatus {
 
   const message = isOpen
     ? "ثبت سفارش هم‌اکنون فعال است."
-    : "ثبت سفارش فقط از شنبه تا چهارشنبه، ساعت ۱۲ تا ۱۵ فعال است.";
+: "ثبت سفارش فقط از شنبه تا چهارشنبه، ساعت ۹ تا ۱۱ فعال است.";
 
   return { isOpen, clock, message };
 }
@@ -110,4 +110,9 @@ export function getTehranDateKey(date: Date = new Date()): string {
   const month = parts.find((p) => p.type === "month")?.value ?? "01";
   const day = parts.find((p) => p.type === "day")?.value ?? "01";
   return `${year}-${month}-${day}`;
+}
+/** True if today is one of the allowed ordering weekdays (Sat–Wed) in Tehran time. */
+export function isOrderDayToday(date: Date = new Date()): boolean {
+  const clock = getTehranClock(date);
+  return ALLOWED_WEEKDAYS.has(clock.weekday);
 }
