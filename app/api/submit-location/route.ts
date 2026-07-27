@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Save this location's count for today.
-  const { record, justCompleted } = await recordSubmission(location as Location, count);
+const { record, justCompleted, dateKey } = await recordSubmission(location as Location, count);
 
   // Still waiting on the other location.
   if (record.gallery === null || record.office === null) {
@@ -139,7 +139,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    await markSmsSent();
+await markSmsSent(dateKey);
 
     return NextResponse.json({
       ok: true,
