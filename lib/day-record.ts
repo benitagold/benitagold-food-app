@@ -9,20 +9,29 @@ const redis = new Redis({
   token: process.env.KV_REST_API_TOKEN!,
 });
 
-export type Location = "gallery" | "office";
+export type Location = "gallery" | "office" | "marketing";
 
 export interface DayRecord {
   gallery: number | null;
   galleryAt: string | null; // ISO timestamp
   office: number | null;
   officeAt: string | null;
+  marketing: number | null;
+  marketingAt: string | null;
   smsSent: boolean;
 }
 
 function emptyRecord(): DayRecord {
-  return { gallery: null, galleryAt: null, office: null, officeAt: null, smsSent: false };
+  return {
+    gallery: null,
+    galleryAt: null,
+    office: null,
+    officeAt: null,
+    marketing: null,
+    marketingAt: null,
+    smsSent: false,
+  };
 }
-
 function keyFor(dateKey: string): string {
   return `benitagold:meal-record:${dateKey}`;
 }
@@ -44,17 +53,17 @@ export async function recordSubmission(
   count: number
 ): Promise<{ record: DayRecord; justCompleted: boolean; dateKey: string }> {
   const { dateKey, record } = await getTodayRecord();
-  const wasComplete = record.gallery !== null && record.office !== null;
+const wasComplete =
+    record.gallery !== null && record.office !== null && record.marketing !== null;
 
   record[location] = count;
   (record as any)[`${location}At`] = new Date().toISOString();
 
-  const isComplete = record.gallery !== null && record.office !== null;
+const isComplete =
+    record.gallery !== null && record.office !== null && record.marketing !== null;
   const justCompleted = isComplete && !wasComplete;
-
   await saveTodayRecord(dateKey, record);
-
-return { record, justCompleted, dateKey };
+  return { record, justCompleted, dateKey };
 }export async function markSmsSent(dateKey: string): Promise<void> {
   const key = keyFor(dateKey);
   const existing = await redis.get<DayRecord>(key);
