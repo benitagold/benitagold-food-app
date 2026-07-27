@@ -136,14 +136,16 @@ export async function sendSms(payload: SmsPayload): Promise<SmsResult> {
 export function buildMealReportMessage(input: {
   galleryCount: number;
   officeCount: number;
+  marketingCount: number;
   total: number;
   timestampFa: string;
 }): string {
-  const { galleryCount, officeCount, total, timestampFa } = input;
+  const { galleryCount, officeCount, marketingCount, total, timestampFa } = input;
   return [
     "برنامه غذایی روزانه بنیتاگلد",
     `تعداد غذای گالری بنیتا گلد (آقای مراثی): ${galleryCount}`,
     `تعداد غذای دفتر حکیم بنیتا گلد (خانم گنجوی): ${officeCount}`,
+    `تعداد غذای دفتر دیجیتال مارکتینگ حکیم بنیتا گلد (آقای فقیهی): ${marketingCount}`,
     `جمع کل: ${total}`,
     `تاریخ و ساعت ثبت: ${timestampFa}`,
   ].join("\n");
