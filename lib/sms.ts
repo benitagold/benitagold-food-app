@@ -150,3 +150,40 @@ export function buildMealReportMessage(input: {
     `تاریخ و ساعت ثبت: ${timestampFa}`,
   ].join("\n");
 }
+export function buildPartialMealReportMessage(input: {
+  galleryCount: number | null;
+  officeCount: number | null;
+  marketingCount: number | null;
+  timestampFa: string;
+}): string {
+  const { galleryCount, officeCount, marketingCount, timestampFa } = input;
+
+  const line = (count: number | null, label: string) =>
+    count === null ? `${label}: ثبت نشده ✗` : `${label}: ${count}`;
+
+  const missing: string[] = [];
+  if (galleryCount === null) missing.push("گالری بنیتا گلد (آقای مراثی)");
+  if (officeCount === null) missing.push("دفتر فروش حکیم بنیتا گلد (خانم گنجوی)");
+  if (marketingCount === null) missing.push("دفتر دیجیتال مارکتینگ حکیم بنیتا گلد (آقای فقیهی)");
+
+  const total = (galleryCount ?? 0) + (officeCount ?? 0) + (marketingCount ?? 0);
+
+  const lines = [
+    "برنامه غذایی روزانه بنیتاگلد",
+    missing.length > 0
+      ? "⚠️ گزارش پایان مهلت (ساعت ۱۱) — برخی بخش‌ها ثبت نشدند"
+      : "گزارش نهایی",
+    line(galleryCount, "تعداد غذای گالری بنیتا گلد (آقای مراثی)"),
+    line(officeCount, "تعداد غذای دفتر فروش حکیم بنیتا گلد (خانم گنجوی)"),
+    line(marketingCount, "تعداد غذای دفتر دیجیتال مارکتینگ حکیم بنیتا گلد (آقای فقیهی)"),
+    `جمع کل (بخش‌های ثبت‌شده): ${total}`,
+  ];
+
+  if (missing.length > 0) {
+    lines.push(`بخش‌های ثبت‌نشده: ${missing.join(" و ")}`);
+  }
+
+  lines.push(`تاریخ و ساعت ارسال: ${timestampFa}`);
+
+  return lines.join("\n");
+}
