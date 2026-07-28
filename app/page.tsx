@@ -249,8 +249,6 @@ export default function Page() {
       />
 
       <footer className="text-xs text-ink/35">
-
-      <footer className="text-xs text-ink/35">
         آخرین به‌روزرسانی وضعیت: {formatTehranTimestamp()}
       </footer>
     </main>
