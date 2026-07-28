@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/check-gallery",
       "schedule": "45 6 * * *"
+    },
+    {
+      "path": "/api/cron/notify-open",
+      "schedule": "30 5 * * *"
     }
   ]
 }
