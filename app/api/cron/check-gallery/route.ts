@@ -5,7 +5,7 @@ import { sendSms } from "@/lib/sms";
 
 export const runtime = "nodejs";
 
-const MARASI_PHONE = "09133379301";
+const MARASI_PHONE = "09132099904";
 const WARNING_MESSAGE =
   "⏰ سلام آقای مراثی جان! ساعت داره از ۱۰:۱۵ رد می‌شه و هنوز خبری از تعداد غذای گالری نیست 😅 یه لحظه وقت بذارید و ثبتش کنید تا بقیه بی‌غذا نمونن 🍽️⚠️";
 
