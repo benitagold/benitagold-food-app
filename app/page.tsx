@@ -152,7 +152,7 @@ function LocationCard({
 
         {submitState.phase === "complete" && (
           <div className="rounded-xl border-2 border-open bg-open/10 p-4 text-sm leading-7 text-ink">
-            <p className="font-bold text-open">هر دو بخش ثبت شد و پیامک نهایی ارسال شد.</p>
+            <p className="font-bold text-open">هر سه بخش ثبت شد و پیامک نهایی ارسال شد.</p>
             <p>
               گالری: {submitState.galleryCount} — دفتر: {submitState.officeCount} — جمع کل: {submitState.total}
             </p>
@@ -219,8 +219,8 @@ export default function Page() {
           برنامه غذایی روزانه بنیتاگلد
         </h1>
         <p className="max-w-md text-sm leading-7 text-ink/65">
-          هر مسئول با رمز خودش تعداد غذای بخش خودش را ثبت می‌کند. به‌محض ثبت هر دو بخش، پیامک جمع کل خودکار ارسال می‌شود.
-        </p>
+  هر مسئول با رمز خودش تعداد غذای بخش خودش را ثبت می‌کند. به‌محض ثبت هر سه بخش، پیامک جمع کل خودکار ارسال می‌شود.
+</p>
         <p className="text-xs text-ink/50">{status.message}</p>
       </header>
 
