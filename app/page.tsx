@@ -38,7 +38,7 @@ function LocationCard({
   const [submitState, setSubmitState] = useState<SubmitState>({ phase: "idle" });
 
   const countNum = Number(countValue);
-  const countValid = Number.isInteger(countNum) && countNum > 0;
+  const countValid = Number.isInteger(countNum) && countNum >= 0;
   const canSubmit =
     !disabled && password.length > 0 && countValid && submitState.phase !== "submitting";
 
