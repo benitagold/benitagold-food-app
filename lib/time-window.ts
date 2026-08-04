@@ -81,12 +81,13 @@ export function getOrderWindowStatus(date: Date = new Date()): WindowStatus {
   const clock = getTehranClock(date);
   const dayOk = ALLOWED_WEEKDAYS.has(clock.weekday);
   const timeOk = clock.hour >= OPEN_HOUR && clock.hour < CLOSE_HOUR;
-  const isOpen = dayOk && timeOk;
-
-  const message = isOpen
+  const holiday = isHolidayToday(date);
+  const isOpen = dayOk && timeOk && !holiday;
+  const message = holiday
+    ? "امروز تعطیل رسمی است — ثبت سفارش غیرفعال است."
+    : isOpen
     ? "ثبت سفارش هم‌اکنون فعال است."
-: "ثبت سفارش فقط از شنبه تا چهارشنبه، ساعت ۹ تا ۱۱ فعال است.";
-
+    : "ثبت سفارش فقط از شنبه تا چهارشنبه، ساعت ۹ تا ۱۱ فعال است.";
   return { isOpen, clock, message };
 }
 
