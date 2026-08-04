@@ -116,3 +116,24 @@ export function isOrderDayToday(date: Date = new Date()): boolean {
   const clock = getTehranClock(date);
   return ALLOWED_WEEKDAYS.has(clock.weekday);
 }
+/**
+ * Official Iranian public holidays (Tehran-local YYYY-MM-DD dates).
+ * Add new dates here as "YYYY-MM-DD" strings — one per line, any order.
+ * These override the normal Sat–Wed schedule: the site stays closed even
+ * if the holiday falls on an otherwise-open weekday.
+ */
+const HOLIDAY_DATES = new Set<string>([
+  "2026-08-04", // اربعین حسینی
+  "2026-08-12", // رحلت رسول اکرم (ص) و شهادت امام حسن مجتبی (ع)
+  "2026-08-30", // میلاد رسول اکرم (ص) و امام جعفر صادق (ع)
+  "2026-12-23", // ولادت امام علی (ع) و روز پدر
+  "2027-01-06", // مبعث رسول اکرم (ص)
+  "2027-02-28", // شهادت حضرت علی (ع)
+  "2027-03-10", // عید سعید فطر
+  "2027-03-20", // روز ملی شدن صنعت نفت ایران
+]);
+
+/** True if the given date (Tehran-local) is an official holiday. */
+export function isHolidayToday(date: Date = new Date()): boolean {
+  return HOLIDAY_DATES.has(getTehranDateKey(date));
+}
