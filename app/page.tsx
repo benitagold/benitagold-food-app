@@ -197,13 +197,13 @@ export default function Page() {
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col items-center gap-8 px-5 py-12">
       <header className="flex flex-col items-center gap-4 text-center">
         <Image
-          src="/logo.png"
-          alt="بنیتاگلد"
-          width={220}
-          height={140}
-          priority
-          className="h-auto w-64 sm:w-80"
-        />
+  src="/logo.png"
+  alt="بنیتاگلد"
+  width={300}
+  height={190}
+  priority
+  className="h-auto w-80 sm:w-[26rem]"
+/>
 
         <span
           className={`status-stamp ${status.isOpen ? "text-open" : "text-closed"}`}
