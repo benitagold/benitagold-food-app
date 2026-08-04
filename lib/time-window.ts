@@ -115,7 +115,7 @@ export function getTehranDateKey(date: Date = new Date()): string {
 /** True if today is one of the allowed ordering weekdays (Sat–Wed) in Tehran time. */
 export function isOrderDayToday(date: Date = new Date()): boolean {
   const clock = getTehranClock(date);
-  return ALLOWED_WEEKDAYS.has(clock.weekday);
+  return ALLOWED_WEEKDAYS.has(clock.weekday) && !isHolidayToday(date);
 }
 /**
  * Official Iranian public holidays (Tehran-local YYYY-MM-DD dates).
