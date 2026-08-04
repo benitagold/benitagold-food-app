@@ -206,7 +206,7 @@ export default function Page() {
 />
 
         <span
-  className={`status-stamp mb-2 ${status.isOpen ? "text-open" : "text-closed"}`}
+  className={`status-stamp mb-6 ${status.isOpen ? "text-open" : "text-closed"}`}
   aria-live="polite"
 >
           <span
