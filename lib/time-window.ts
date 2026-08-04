@@ -72,6 +72,8 @@ export function getTehranClock(date: Date = new Date()): TehranClock {
 
 export interface WindowStatus {
   isOpen: boolean;
+  isHoliday: boolean;
+  holidayName: string | null;
   clock: TehranClock;
   message: string;
 }
@@ -81,14 +83,15 @@ export function getOrderWindowStatus(date: Date = new Date()): WindowStatus {
   const clock = getTehranClock(date);
   const dayOk = ALLOWED_WEEKDAYS.has(clock.weekday);
   const timeOk = clock.hour >= OPEN_HOUR && clock.hour < CLOSE_HOUR;
-  const holiday = isHolidayToday(date);
+  const holidayName = getHolidayName(date);
+  const holiday = holidayName !== null;
   const isOpen = dayOk && timeOk && !holiday;
   const message = holiday
-    ? "امروز تعطیل رسمی است — ثبت سفارش غیرفعال است."
+    ? `امروز تعطیل رسمی (${holidayName}) است — ثبت سفارش غیرفعال است.`
     : isOpen
     ? "ثبت سفارش هم‌اکنون فعال است."
     : "ثبت سفارش فقط از شنبه تا چهارشنبه، ساعت ۹ تا ۱۱ فعال است.";
-  return { isOpen, clock, message };
+  return { isOpen, isHoliday: holiday, holidayName, clock, message };
 }
 
 export function formatTehranTimestamp(date: Date = new Date()): string {
@@ -123,18 +126,23 @@ export function isOrderDayToday(date: Date = new Date()): boolean {
  * These override the normal Sat–Wed schedule: the site stays closed even
  * if the holiday falls on an otherwise-open weekday.
  */
-const HOLIDAY_DATES = new Set<string>([
-  "2026-08-04", // اربعین حسینی
-  "2026-08-12", // رحلت رسول اکرم (ص) و شهادت امام حسن مجتبی (ع)
-  "2026-08-30", // میلاد رسول اکرم (ص) و امام جعفر صادق (ع)
-  "2026-12-23", // ولادت امام علی (ع) و روز پدر
-  "2027-01-06", // مبعث رسول اکرم (ص)
-  "2027-02-28", // شهادت حضرت علی (ع)
-  "2027-03-10", // عید سعید فطر
-  "2027-03-20", // روز ملی شدن صنعت نفت ایران
-]);
+const HOLIDAY_DATES: Record<string, string> = {
+  "2026-08-04": "اربعین حسینی",
+  "2026-08-12": "رحلت حضرت رسول اکرم (ص) و شهادت امام حسن مجتبی (ع)",
+  "2026-08-30": "میلاد حضرت رسول اکرم (ص) و امام جعفر صادق (ع)",
+  "2026-12-23": "ولادت امام علی (ع) و روز پدر",
+  "2027-01-06": "مبعث حضرت رسول اکرم (ص)",
+  "2027-02-28": "شهادت حضرت علی (ع)",
+  "2027-03-10": "عید سعید فطر",
+  "2027-03-20": "روز ملی شدن صنعت نفت ایران",
+};
+
+/** Returns the holiday name for the given date (Tehran-local), or null if it's not a holiday. */
+export function getHolidayName(date: Date = new Date()): string | null {
+  return HOLIDAY_DATES[getTehranDateKey(date)] ?? null;
+}
 
 /** True if the given date (Tehran-local) is an official holiday. */
 export function isHolidayToday(date: Date = new Date()): boolean {
-  return HOLIDAY_DATES.has(getTehranDateKey(date));
+  return getHolidayName(date) !== null;
 }
