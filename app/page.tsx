@@ -212,15 +212,19 @@ export default function Page() {
           <span
             className={`h-2.5 w-2.5 rounded-full ${status.isOpen ? "bg-open" : "bg-closed"}`}
           />
-          {status.isOpen ? "پذیرش سفارش: باز است" : "پذیرش سفارش: بسته است"}
+          {status.isHoliday
+            ? `امروز ${status.holidayName} است`
+            : status.isOpen
+            ? "پذیرش سفارش: باز است"
+            : "پذیرش سفارش: بسته است"}
         </span>
 
         <h1 className="text-3xl font-extrabold text-gold sm:text-4xl">
           برنامه غذایی روزانه بنیتاگلد
         </h1>
         <p className="max-w-md text-sm leading-7 text-ink/65">
-  هر مسئول با رمز خودش تعداد غذای بخش خودش را ثبت می‌کند. به‌محض ثبت هر سه بخش، پیامک جمع کل خودکار ارسال می‌شود.
-</p>
+          هر مسئول با رمز خودش تعداد غذای بخش خودش را ثبت می‌کند. به‌محض ثبت هر سه بخش، پیامک جمع کل خودکار ارسال می‌شود.
+        </p>
         <p className="text-xs text-ink/50">{status.message}</p>
       </header>
 
