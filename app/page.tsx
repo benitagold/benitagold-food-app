@@ -85,7 +85,14 @@ function LocationCard({
   }
 
   return (
-    <section className="w-full rounded-3xl bg-paper p-6 text-ink shadow-ticket sm:p-8">
+    <main
+      className="mx-auto flex min-h-screen max-w-2xl flex-col items-center gap-8 px-5 py-12"
+      style={{
+        backgroundImage: "url('/%D9%BE%D8%B4%D8%AA%20a4%20copy.jpg')",
+        backgroundRepeat: "repeat",
+        backgroundSize: "400px",
+      }}
+    >
       <div className="mb-6 flex items-center justify-between border-b-2 border-dashed border-ink/15 pb-4">
         <div>
           <h2 className="text-lg font-bold">{title}</h2>
