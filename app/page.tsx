@@ -85,14 +85,7 @@ function LocationCard({
   }
 
   return (
-    <main
-      className="mx-auto flex min-h-screen max-w-2xl flex-col items-center gap-8 px-5 py-12"
-      style={{
-        backgroundImage: "url('/%D9%BE%D8%B4%D8%AA%20a4%20copy.jpg')",
-        backgroundRepeat: "repeat",
-        backgroundSize: "400px",
-      }}
-    >
+    <section className="w-full rounded-3xl bg-paper p-6 text-ink shadow-ticket sm:p-8">
       <div className="mb-6 flex items-center justify-between border-b-2 border-dashed border-ink/15 pb-4">
         <div>
           <h2 className="text-lg font-bold">{title}</h2>
@@ -201,21 +194,28 @@ export default function Page() {
   }, []);
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col items-center gap-8 px-5 py-12">
+    <main
+      className="mx-auto flex min-h-screen max-w-2xl flex-col items-center gap-8 px-5 py-12"
+      style={{
+        backgroundImage: "url('/%D9%BE%D8%B4%D8%AA%20a4%20copy.jpg')",
+        backgroundRepeat: "repeat",
+        backgroundSize: "400px",
+      }}
+    >
       <header className="flex flex-col items-center gap-4 text-center">
         <Image
-  src="/logo.png"
-  alt="بنیتاگلد"
-  width={300}
-  height={190}
-  priority
-  className="h-auto w-80 sm:w-[26rem]"
-/>
+          src="/logo.png"
+          alt="بنیتاگلد"
+          width={300}
+          height={190}
+          priority
+          className="h-auto w-80 sm:w-[26rem]"
+        />
 
         <span
-  className={`status-stamp mb-12 ${status.isOpen ? "text-open" : "text-closed"}`}
-  aria-live="polite"
->
+          className={`status-stamp mb-12 ${status.isOpen ? "text-open" : "text-closed"}`}
+          aria-live="polite"
+        >
           <span
             className={`h-2.5 w-2.5 rounded-full ${status.isOpen ? "bg-open" : "bg-closed"}`}
           />
