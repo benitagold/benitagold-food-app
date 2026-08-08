@@ -194,14 +194,7 @@ export default function Page() {
   }, []);
 
   return (
-    <main
-      className="mx-auto flex min-h-screen max-w-2xl flex-col items-center gap-8 px-5 py-12"
-      style={{
-        backgroundImage: "url('/%D9%BE%D8%B4%D8%AA%20a4%20copy.jpg')",
-        backgroundRepeat: "repeat",
-        backgroundSize: "400px",
-      }}
-    >
+    <main className="mx-auto flex min-h-screen max-w-2xl flex-col items-center gap-8 px-5 py-12">
       <header className="flex flex-col items-center gap-4 text-center">
         <Image
           src="/logo.png"
