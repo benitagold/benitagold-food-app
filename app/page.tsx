@@ -194,7 +194,14 @@ export default function Page() {
   }, []);
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col items-center gap-8 px-5 py-12">
+    <main
+      className="mx-auto flex min-h-screen max-w-2xl flex-col items-center gap-8 px-5 py-12"
+      style={{
+        backgroundImage: "url('/bg-tile.png')",
+        backgroundRepeat: "repeat",
+        backgroundSize: "300px",
+      }}
+    >
       <header className="flex flex-col items-center gap-4 text-center">
         <Image
           src="/logo.png"
