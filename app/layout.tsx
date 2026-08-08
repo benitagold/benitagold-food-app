@@ -21,7 +21,16 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="font-vazir bg-white text-ink antialiased">{children}</body>
+      <body
+  className="font-vazir text-ink antialiased"
+  style={{
+    backgroundImage: "url('/bg-tile.png')",
+    backgroundRepeat: "repeat",
+    backgroundSize: "300px",
+  }}
+>
+  {children}
+</body>
     </html>
   );
 }
